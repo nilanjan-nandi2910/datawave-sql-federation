@@ -53,8 +53,14 @@ docker compose ps
 
 Open:
 
-* Trino: [http://localhost:8080](http://localhost:8080)
-* Metabase: [http://localhost:3001](http://localhost:3001)
+* Trino: [http://localhost:8080] (Direct URL)
+* Metabase: [http://localhost:3001]
+
+Trino Via SSO :
+
+* Open [http://localhost:8082] → redirects to Keycloak [http://localhost:8081] → after login shows Trino UI.
+
+* Email verified must be ON for Keycloak user for this to work
 
 Check status/logs:
 
