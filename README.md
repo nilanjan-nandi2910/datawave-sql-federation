@@ -5,6 +5,7 @@ Local SQL federation stack : **Trino** as the federation engine, **PostgreSQL + 
 ---
 
 ## Architecture Overview (maps to challenge diagram)
+<img width="2648" height="1528" alt="image" src="https://github.com/user-attachments/assets/a3b8bf5d-b0c5-4a4c-ab24-bdf5bcdd83a4" />
 
 **Components**
 - **Trino (Federation Engine)**: Single SQL endpoint that queries multiple backends via connectors/catalogs.  
