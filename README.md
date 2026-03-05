@@ -4,7 +4,7 @@ Local SQL federation stack : **Trino** as the federation engine, **PostgreSQL + 
 
 ---
 
-## Architecture Overview (maps to challenge diagram)
+## Architecture Overview :
 <img width="3264" height="1764" alt="image" src="https://github.com/user-attachments/assets/1103f91b-33aa-4918-89f3-cbd3165a94a7" />
 
 
