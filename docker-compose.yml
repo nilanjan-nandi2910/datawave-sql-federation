@@ -54,8 +54,54 @@ services:
       - trino 
     environment:
       MB_DB_FILE: /metabase-data/metabase.db
+      MB_OIDC_ENABLED: "true"
+      MB_OIDC_ISSUER: "http://keycloak:8080/realms/datawave"
+      MB_OIDC_CLIENT_ID: "metabase"
+      MB_OIDC_CLIENT_SECRET: "t03vw2QkUtm4N6XLO4vJjHlxG1vznPVQ"
+      MB_OIDC_SCOPE: "openid email profile"
     volumes:
       - metabase-data:/metabase-data
-
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: keycloak
+    command: ["start-dev"]
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8081
+      KC_HOSTNAME_STRICT: "false"
+      KC_PROXY: edge
+      KC_HTTP_ENABLED: "true"
+    ports:
+      - "8081:8080"
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+    container_name: oauth2-proxy
+    restart: unless-stopped
+    depends_on:
+      - keycloak
+      - trino
+    ports:
+      - "8082:4180"
+    command:
+      - --http-address=0.0.0.0:4180
+      - --provider=oidc
+      - --oidc-issuer-url=http://keycloak:8080/realms/datawave
+      - --insecure-oidc-skip-issuer-verification=true
+      - --login-url=http://localhost:8081/realms/datawave/protocol/openid-connect/auth
+      - --redeem-url=http://keycloak:8080/realms/datawave/protocol/openid-connect/token
+      - --validate-url=http://keycloak:8080/realms/datawave/protocol/openid-connect/userinfo
+      - --client-id=trino-proxy
+      - --client-secret=V0SpdehluCifELchnUB5wC4eIm2SJXnU
+      - --cookie-secret=1k0KmnaiQH9kdNEasGq7HA==
+      - --email-domain=*
+      - --upstream=http://trino:8080/
+      - --redirect-url=http://localhost:8082/oauth2/callback
+      - --cookie-secure=false
+      - --skip-provider-button=true
 volumes:
   metabase-data:
+  keycloak-data:
